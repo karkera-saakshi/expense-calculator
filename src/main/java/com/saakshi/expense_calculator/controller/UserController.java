@@ -1,11 +1,15 @@
 package com.saakshi.expense_calculator.controller;
 
+import com.saakshi.expense_calculator.dto.CalculateRequestDto;
 import com.saakshi.expense_calculator.dto.LoginDto;
 import com.saakshi.expense_calculator.dto.PersonDto;
 import com.saakshi.expense_calculator.models.User;
 import com.saakshi.expense_calculator.repositories.UserRepo;
+import com.saakshi.expense_calculator.services.ExpenseCalculationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -34,10 +38,11 @@ public class UserController {
         }
         return "Login SuccessFul...";
     }
-    @PostMapping("/generate")
-    public  void generate(@RequestBody PersonDto personDto)
+    ExpenseCalculationService expenseCalculationService;
+    @PostMapping("/calculate")
+    public Map<String, Double> generate(@RequestBody CalculateRequestDto requestDto)
     {
-
+        return expenseCalculationService.calculateSplit(requestDto);
     }
 }
 
