@@ -73,4 +73,11 @@ public class OwnsController {
             throw new IllegalArgumentException("Invalid paid value");
         }
     }
+    @PatchMapping("/ispaid/{id}")
+    public void ispaid(@PathVariable int id)
+    {
+        Owns own = ownsRepo.findById(id).orElseThrow(()->new RuntimeException("Record not found"));
+        own.setPaid(true);
+        ownsRepo.save(own);
+    }
 }
