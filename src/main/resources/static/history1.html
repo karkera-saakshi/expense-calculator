@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #1A1A2E;
+            --card-bg: #2B2B46;
+            --card-border: #303150;
+            --turquoise: #0DBACC;
+            --lavender: #9F7FE0;
+            --cotton-candy: #F18AB5;
+            --steel: #BDBDCB;
+            --white: #F7F7F8;
+            --success-glow: rgba(13, 186, 204, 0.2);
+            --danger-glow: rgba(241, 138, 181, 0.2);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background: radial-gradient(circle at center, #2B2B46 0%, #1A1A2E 100%);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .highlight { color: var(--cotton-candy); }
+
+        .history-container {
+            background: rgba(43, 43, 70, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--steel);
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .row-paid {
+            color: #00ffcc;
+            background: rgba(13, 186, 204, 0.05);
+        }
+
+        .row-not-paid {
+            color: #ff6b81;
+            background: rgba(241, 138, 181, 0.05);
+        }
+
+        tr:hover {
+            filter: brightness(1.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>Payment <span class="highlight">History</span></h1>
+
+<div class="history-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Time</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="historyTable">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const historyData = [
+        { name: "A", amount: 300, time: "2026-02-08 10:30", paid: true },
+        { name: "B", amount: 500, time: "2026-02-08 10:35", paid: false },
+        { name: "C", amount: 200, time: "2026-02-08 10:40", paid: true }
+    ];
+
+    function loadHistory(){
+        const tableBody = document.getElementById("historyTable");
+        tableBody.innerHTML = "";
+        historyData.forEach(entry => {
+            const statusClass = entry.paid ? 'row-paid' : 'row-not-paid';
+
+            tableBody.innerHTML += `
+                <tr class="${statusClass}">
+                    <td>${entry.name}</td>
+                    <td>₹${entry.amount}</td>
+                    <td>${entry.time}</td>
+                    <td style="font-weight: bold;">
+                        ${entry.paid ? 'PAID' : 'PENDING'}
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    loadHistory();
+</script>
+</body>
+</html>

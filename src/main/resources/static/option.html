@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Expense Splitter Qnd Settlement Record</title>
+    <title>Group Expense Splitter And Settlement Record</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -143,14 +143,22 @@
 <div id="container">
     <div id="contain1">
         <img src="img1.jpg" alt="Splitter" id="img1">
-        <button id="btn1">Group Expense Splitter</button>
+        <button id="btn1" onclick="expenseSplitterPage()">Group Expense Splitter</button>
     </div>
 
     <div id="contain2">
         <img src="img2.jpg" alt="Debts" id="img2">
-        <button id="btn2">Who Owes Whom</button>
+        <button id="btn2" onclick="ownsPage()">Who Owes Whom</button>
     </div>
 </div>
 
+<script>
+    function expenseSplitterPage(){
+    window.location.href = 'groupExpenseSplitter.html';
+    }
+    function ownsPage(){
+      window.location.href = 'owns.html';
+    }
+</script>
 </body>
 </html>

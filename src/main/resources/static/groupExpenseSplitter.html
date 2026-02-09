@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Expense Splitter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #1A1A2E;
+            --card-bg: #2B2B46;
+            --card-border: #303150;
+            --turquoise: #0DBACC;
+            --lavender: #9F7FE0;
+            --cotton-candy: #F18AB5;
+            --steel: #BDBDCB;
+            --white: #F7F7F8;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background: radial-gradient(circle at center, #2B2B46 0%, #1A1A2E 100%);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #title {
+            font-size: 50px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .highlight {
+            color: var(--cotton-candy);
+        }
+
+        #subtitle {
+            font-size: 18px;
+            color: var(--steel);
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 40px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        #contain1 {
+            background: rgba(43, 43, 70, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            width: 350px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        input {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--turquoise);
+        }
+
+        #peopleInputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        #peopleInputs::-webkit-scrollbar {
+            width: 5px;
+        }
+        #peopleInputs::-webkit-scrollbar-thumb {
+            background: var(--card-border);
+            border-radius: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #btn1 {
+            background-color: var(--lavender);
+        }
+
+        #btn2 {
+            background-color: var(--turquoise);
+            display: none;
+        }
+
+        #result {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .res-row {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--steel);
+        }
+
+    </style>
+</head>
+<body>
+
+<h2 id="title">Expense <span class="highlight">Splitter</span></h2>
+<p id="subtitle">Enter details below to calculate the group split.</p>
+
+<div id="contain1">
+    <input type="number" placeholder="Number of people" id="peopleCount">
+    <input type="number" placeholder="Total amount (₹)" id="totalAmount">
+
+    <button onclick="generateInputs()" id="btn1">Generate Names</button>
+
+    <div id="peopleInputs"></div>
+
+    <button onclick="calculate()" id="btn2">Calculate</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    function generateInputs() {
+        const n = document.getElementById("peopleCount").value;
+        const container = document.getElementById("peopleInputs");
+        container.innerHTML = "";
+
+        for(let i = 0; i < n; i++) {
+            container.innerHTML += `
+                <input type="text" placeholder="Person ${i+1} Name" class="name">
+            `;
+        }
+
+        if(n > 0) {
+            document.getElementById("btn2").style.display = "block";
+        }
+    }
+
+    function calculate() {
+        const totalAmount = document.getElementById("totalAmount").value;
+        const names = document.getElementsByClassName("name");
+        const resultDiv = document.getElementById("result");
+
+        // Basic logic: Equal split (Placeholder for your backend logic)
+        if(names.length > 0 && totalAmount > 0) {
+            const split = (totalAmount / names.length).toFixed(2);
+            let output = "<div style='margin-bottom:10px;'>Results:</div>";
+
+            for(let i = 0; i < names.length; i++) {
+                let displayName = names[i].value || `Person ${i+1}`;
+                output += `<div class="res-row">${displayName}: <span class="highlight">₹${split}</span></div>`;
+            }
+            resultDiv.innerHTML = output;
+        }
+    }
+</script>
+</body>
+</html>
