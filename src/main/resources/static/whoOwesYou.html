@@ -140,12 +140,20 @@
     </div>
 
     <div class="button-stack">
-        <button class="btn-primary" >Enter Details</button>
-        <button class="btn-secondary">View Records</button>
+        <button class="btn-primary" onclick="btnPrimary()" >Enter Details</button>
+        <button class="btn-secondary" onclick="btnSecondary()">View Records</button>
     </div>
 
     <a href="option.html" class="back-link">← Back to Dashboard</a>
 </div>
 
+<script>
+    function btnPrimary(){
+         window.open('details1.html', '_blank');
+    }
+    function btnSecondary(){
+         window.open('history2.html', '_blank');
+    }
+</script>
 </body>
 </html>
