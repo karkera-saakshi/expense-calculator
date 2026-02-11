@@ -150,6 +150,7 @@
     <button onclick="generateInputs()" id="btn1">Generate Names</button>
 
     <div id="peopleInputs"></div>
+    <div id="peoplePercent"></div>
 
     <button onclick="calculate()" id="btn2">Calculate</button>
 
@@ -158,37 +159,64 @@
 
 <script>
     function generateInputs() {
-        const n = document.getElementById("peopleCount").value;
-        const container = document.getElementById("peopleInputs");
-        container.innerHTML = "";
+        const n = parseInt(document.getElementById("peopleCount").value);
+        const nameContainer = document.getElementById("peopleInputs");
+        const percentContainer = document.getElementById("peoplePercent");
+
+        // Clear previous inputs
+        nameContainer.innerHTML = "";
+        percentContainer.innerHTML = "";
+
+        if (isNaN(n) || n <= 0) {
+            alert("Please enter a valid number of people.");
+            return;
+        }
 
         for(let i = 0; i < n; i++) {
-            container.innerHTML += `
-                <input type="text" placeholder="Person ${i+1} Name" class="name">
+            nameContainer.innerHTML += `
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" placeholder="Name ${i+1}" class="name" style="flex: 2;">
+                    <input type="number" placeholder="%" class="percent" style="flex: 1;">
+                </div>
             `;
         }
 
-        if(n > 0) {
-            document.getElementById("btn2").style.display = "block";
-        }
+        document.getElementById("btn2").style.display = "block";
     }
 
     function calculate() {
-        const totalAmount = document.getElementById("totalAmount").value;
-        const names = document.getElementsByClassName("name");
+        const totalAmount = parseFloat(document.getElementById("totalAmount").value);
+        const nameElements = document.getElementsByClassName("name");
+        const percentElements = document.getElementsByClassName("percent");
         const resultDiv = document.getElementById("result");
 
-        // Basic logic: Equal split (Placeholder for your backend logic)
-        if(names.length > 0 && totalAmount > 0) {
-            const split = (totalAmount / names.length).toFixed(2);
-            let output = "<div style='margin-bottom:10px;'>Results:</div>";
-
-            for(let i = 0; i < names.length; i++) {
-                let displayName = names[i].value || `Person ${i+1}`;
-                output += `<div class="res-row">${displayName}: <span class="highlight">₹${split}</span></div>`;
-            }
-            resultDiv.innerHTML = output;
+        if (isNaN(totalAmount) || totalAmount <= 0) {
+            resultDiv.innerHTML = "<span style='color: #F18AB5;'>Enter a valid total amount</span>";
+            return;
         }
+
+        let totalPercent = 0;
+        for (let p of percentElements) {
+            totalPercent += parseFloat(p.value) || 0;
+        }
+
+        // Validation: Ensure percentages add up to 100
+        if (totalPercent !== 100) {
+            resultDiv.innerHTML = `<span style='color: #F18AB5;'>Total percent must be 100% (Current: ${totalPercent}%)</span>`;
+            return;
+        }
+
+        let output = "<div style='margin-bottom:10px; color: white;'>Final Split:</div>";
+
+        for (let i = 0; i < nameElements.length; i++) {
+            let name = nameElements[i].value || `Person ${i+1}`;
+            let percent = parseFloat(percentElements[i].value) || 0;
+            let share = ((percent / 100) * totalAmount).toFixed(2);
+
+            output += `<div class="res-row">${name}: <span class="highlight">₹${share}</span> (${percent}%)</div>`;
+        }
+
+        resultDiv.innerHTML = output;
     }
 </script>
 </body>

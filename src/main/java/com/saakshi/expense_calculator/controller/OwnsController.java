@@ -3,7 +3,9 @@ import com.saakshi.expense_calculator.dto.DetailsDto;
 import com.saakshi.expense_calculator.enums.Direction;
 
 import com.saakshi.expense_calculator.models.Owns;
+import com.saakshi.expense_calculator.models.User;
 import com.saakshi.expense_calculator.repositories.OwnsRepo;
+import com.saakshi.expense_calculator.repositories.UserRepo;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,6 +20,8 @@ import java.util.List;
 public class OwnsController {
     @Autowired
     OwnsRepo ownsRepo;
+    @Autowired
+    UserRepo userRepo;
     @PostMapping("/enter-details")
     public void enterDetils(@RequestBody DetailsDto detailsDto)
     {
@@ -42,10 +46,10 @@ public class OwnsController {
     }
 
     @GetMapping("/sort")
-    public List<Owns> sort(@RequestParam String sortBy, @RequestParam String paid)
+    public List<Owns> sort(@RequestParam String sortBy1,@RequestParam String sortBy2, @RequestParam String paid)
     {
         Sort sort;
-        switch(sortBy)
+        switch(sortBy1)
         {
             case "amount_desc":
                 sort = Sort.by("amount").ascending();
@@ -55,6 +59,12 @@ public class OwnsController {
                 sort = Sort.by("amount").ascending();
                 break;
 
+            default:
+                throw new IllegalArgumentException("Invalid sortBy value");
+        }
+
+        switch(sortBy2)
+        {
             case "time_asc":
                 sort = Sort.by("createdAt").ascending();
                 break;
@@ -87,6 +97,14 @@ public class OwnsController {
         Owns own = ownsRepo.findById(id).orElseThrow(()->new RuntimeException("Record not found"));
         own.setPaid(true);
         ownsRepo.save(own);
+    }
+
+    @GetMapping("/delete/{userId}/{historyId}")
+    public void delete(@PathVariable int userId, @PathVariable int historyId)
+    {
+        User user = userRepo.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
+        Owns own = ownsRepo.findById(historyId).orElseThrow(()-> new RuntimeException("Transaction not found"));
+        ownsRepo.delete(own);
     }
 
     @GetMapping("/direction")

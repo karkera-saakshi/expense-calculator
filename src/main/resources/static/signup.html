@@ -178,5 +178,34 @@
         <p id="login">Already have an account? <a href="login.html">Login</a></p>
     </div>
 </div>
+<script>
+    document.getElementById("btn1").addEventListener("click", async function() {
+        const user ={
+            username : document.getElementById("username").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        };
+        try{
+            const response = await fetch("http://localhost:8081/register",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+            });
+            if(!response.ok)
+            {
+                throw new Error("Registration Failed!");
+            }
+            const result = await response.text();
+            alert(result);
+        }
+        catch(error)
+        {
+            console.error("Error: ", error);
+            alert("Something went wrong");
+        }
+    })
+</script>
 </body>
 </html>
