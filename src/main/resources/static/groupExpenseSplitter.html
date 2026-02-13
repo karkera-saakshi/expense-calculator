@@ -149,7 +149,7 @@
 
     <button onclick="generateInputs()" id="btn1">Generate Names</button>
 
-    <div id="peopleInputs"></div>
+    <div id="peopleInputs" ></div>
     <div id="peoplePercent"></div>
 
     <button onclick="calculate()" id="btn2">Calculate</button>
@@ -158,65 +158,97 @@
 </div>
 
 <script>
-    function generateInputs() {
-        const n = parseInt(document.getElementById("peopleCount").value);
-        const nameContainer = document.getElementById("peopleInputs");
-        const percentContainer = document.getElementById("peoplePercent");
-
-        // Clear previous inputs
-        nameContainer.innerHTML = "";
-        percentContainer.innerHTML = "";
-
-        if (isNaN(n) || n <= 0) {
-            alert("Please enter a valid number of people.");
-            return;
+    let totalPercent=0;
+    function generateInputs()
+    {
+        const peopleCount = parseFloat(document.getElementById("peopleCount").value);
+        const totalAmount = parseFloat(document.getElementById("totalAmount").value);
+        const peopleInput = document.getElementById("peopleInputs");
+        const peoplePercent = document.getElementById("peoplePercent");
+        peopleInput.innerHTML = "";
+        for(let i=0;i<peopleCount;i++)
+        {
+            peopleInput.innerHTML += `
+            <input type="text" placeholder="Name" class="nameInput">
+            <input type="number" placeholder="Percentage" class="percentage">
+            `
         }
-
-        for(let i = 0; i < n; i++) {
-            nameContainer.innerHTML += `
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" placeholder="Name ${i+1}" class="name" style="flex: 2;">
-                    <input type="number" placeholder="%" class="percent" style="flex: 1;">
-                </div>
-            `;
-        }
-
         document.getElementById("btn2").style.display = "block";
     }
-
-    function calculate() {
+    function calculate(){
         const totalAmount = parseFloat(document.getElementById("totalAmount").value);
-        const nameElements = document.getElementsByClassName("name");
-        const percentElements = document.getElementsByClassName("percent");
-        const resultDiv = document.getElementById("result");
-
-        if (isNaN(totalAmount) || totalAmount <= 0) {
-            resultDiv.innerHTML = "<span style='color: #F18AB5;'>Enter a valid total amount</span>";
-            return;
+        const people = [];
+        const peopleInput = document.getElementsByClassName("nameInput");
+        const percentage = document.getElementsByClassName("percentage");
+        for(let i=0;i< peopleInput.length;i++)
+        {
+           people.push({
+           name : peopleInput[i].value,
+           percentage: parseFloat(percentage[i].value)
+           });
         }
+        fetch("http://localhost:8081/calculate",{
+            method: "POST",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                totalAmount: totalAmount,
+                people: people
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+            return response.json();
+        })
 
-        let totalPercent = 0;
-        for (let p of percentElements) {
-            totalPercent += parseFloat(p.value) || 0;
-        }
 
-        // Validation: Ensure percentages add up to 100
-        if (totalPercent !== 100) {
-            resultDiv.innerHTML = `<span style='color: #F18AB5;'>Total percent must be 100% (Current: ${totalPercent}%)</span>`;
-            return;
-        }
-
-        let output = "<div style='margin-bottom:10px; color: white;'>Final Split:</div>";
-
-        for (let i = 0; i < nameElements.length; i++) {
-            let name = nameElements[i].value || `Person ${i+1}`;
-            let percent = parseFloat(percentElements[i].value) || 0;
-            let share = ((percent / 100) * totalAmount).toFixed(2);
-
-            output += `<div class="res-row">${name}: <span class="highlight">₹${share}</span> (${percent}%)</div>`;
-        }
-
-        resultDiv.innerHTML = output;
+        .then(data=>{
+            const result = document.getElementById("result");
+            result.innerHTML ="";
+            for (const name in data) {
+                result.innerHTML += `
+                    <div class="res-row">
+                        ${name} pays ₹${data[name].toFixed(2)}
+                    </div>
+                `;
+            }
+            for (let i = 0; i < percentage.length; i++)
+            {
+                if (percentage[i].value === "")
+                {
+                    alert("Mention percentage of each person");
+                    return;
+                }
+            }
+            for (let i = 0; i < percentage.length; i++)
+            {
+                totalPercent+=percentage[i];
+            }
+            if(totalPercent>100)
+            {
+            alert("Percentage should be equal to 100");
+            }
+        })
+        .catch(error=>{
+            console.error("Error: "+error);
+            if(totalAmount!=100)
+            {
+            alert("The total pecentage should reach 100");
+            }
+            for (let i = 0; i < percentage.length; i++)
+            {
+                if (percentage[i].value === "")
+                {
+                    alert("Mention percentage of each person");
+                    return;
+                }
+            }
+        });
     }
 </script>
 </body>

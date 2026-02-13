@@ -38,6 +38,7 @@ public class UserController {
         }
         return "Login SuccessFul...";
     }
+    @Autowired
     ExpenseCalculationService expenseCalculationService;
     @PostMapping("/calculate")
     public Map<String, Double> generate(@RequestBody CalculateRequestDto requestDto)
