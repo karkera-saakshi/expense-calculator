@@ -21,7 +21,10 @@ public class Owns {
     User user;
     @Enumerated(EnumType.STRING)
     Direction direction;
+    @Column(nullable = false)
     String otherPartyName;
+    @Column(nullable = false)
+    String selfName;
     @Column(nullable = false)
     double amount;
     @Column(nullable = false)

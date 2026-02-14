@@ -192,6 +192,13 @@
                 },
                 body: JSON.stringify(user)
             });
+                 if (!response.ok) {
+                const errorMessage = await response.text();
+                alert(errorMessage); // will show only "User not found" or "Incorrect password"
+                return;
+            }
+
+
             const result = await response.text();
             alert(result);
             window.location.href = 'option.html';
@@ -199,7 +206,7 @@
         catch(error)
         {
             console.error("Error: "+error);
-            alert("Something went wrong");
+            alert("Something went wring");
         }
     });
 </script>

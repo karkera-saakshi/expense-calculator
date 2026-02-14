@@ -25,17 +25,32 @@ public class OwnsController {
     @PostMapping("/enter-details")
     public void enterDetils(@RequestBody DetailsDto detailsDto)
     {
+        User user = userRepo.findByUsername(detailsDto.getSelfName());
+        if (user == null) {
+            throw new IllegalArgumentException("User not found with username: " + detailsDto.getSelfName());
+        }
         Owns own = new Owns();
-        if (detailsDto.getName() =="") {
+        own.setUser(user);
+
+        if (detailsDto.getSelfName() == null || detailsDto.getSelfName().trim().isEmpty())
+        {
             throw new IllegalArgumentException("Please enter name");
         }
-        own.setOtherPartyName(detailsDto.getName());
+        if (detailsDto.getOtherPartyName() == null || detailsDto.getOtherPartyName().trim().isEmpty())
+        {
+            throw new IllegalArgumentException("Please enter name");
+        }
+        own.setOtherPartyName(detailsDto.getOtherPartyName());
+        own.setSelfName(detailsDto.getSelfName());
         if (detailsDto.getAmount() <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
         own.setAmount(detailsDto.getAmount());
         own.setCreatedAt(LocalDateTime.now());
-        own.setPaid(false);
+        own.setPaid(detailsDto.isPaid());
+        own.setUser(user);  // MUST set this
+        own.setDirection(detailsDto.getDirection());
+
         ownsRepo.save(own);
     }
 

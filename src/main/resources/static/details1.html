@@ -102,11 +102,56 @@
 <body>
 
 <div class="settlement-card">
-    <input type="text" placeholder="Enter Other Party's Name">
-    <input type="text" placeholder="Enter Me or Your Name">
-    <input type="number" placeholder="Enter Amount in Rupees">
-    <button type="button">Add Settlement</button>
+    <input type="text" id="otherName" placeholder="Enter Other Party's Name">
+    <input type="text" id="myName" placeholder="Enter Your Username">
+    <input type="number" id="amount" placeholder="Enter Amount in Rupees">
+    <button type="button" id="addBtn">Add Settlement</button>
 </div>
 
+<script>
+    document.getElementById("addBtn").addEventListener('click', function() {
+        const myName = document.getElementById("myName").value.trim();
+        const otherPartyName = document.getElementById("otherName").value.trim();
+        const amount = parseFloat(document.getElementById("amount").value.trim());
+
+        if (!myName || !otherPartyName || !amount || amount <= 0) {
+            alert("Enter all the fields properly");
+            return;
+        }
+
+        const details = {
+            selfName: myName,
+            otherPartyName: otherPartyName,
+            amount: amount,
+            direction: "OWNS_ME"
+        };
+
+        try {
+            // fetch returns a promise
+            fetch("http://localhost:8081/enter-details", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(details)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Added Successfully");
+                    document.getElementById('myName').value = "";
+                    document.getElementById('otherName').value = "";
+                    document.getElementById('amount').value = "";
+                } else {
+                    // manually throw error so it goes to catch
+                    return response.text().then(text => { throw new Error(text) });
+                }
+            })
+            .catch(err => {  // this is the fetch error handler
+                alert("Error: " + err.message);
+            });
+        } catch (err) {
+            // catch any synchronous errors (rare in this case)
+            alert("Error: " + err.message);
+        }
+    });
+</script>
 </body>
 </html>

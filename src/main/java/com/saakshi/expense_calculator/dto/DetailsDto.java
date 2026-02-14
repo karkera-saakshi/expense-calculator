@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetailsDto {
-    String name;
+    String selfName;
+    String otherPartyName;
+    boolean isPaid;
     double amount;
     Direction direction;
 }
